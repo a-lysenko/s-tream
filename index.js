@@ -1,4 +1,6 @@
 import {
+  runAllGoodFlowingModeReadableStream, runAllGoodIteratorReadableStream,
+  runAllGoodPausedModeReadableStream,
   runAllGoodWritableStream,
   runAsyncWCallbackWritableStream,
   runNoWCallbackWritableStream,
@@ -14,3 +16,9 @@ import {
 // runImageWritableStream();
 
 // runWithImage();
+
+// runAllGoodPausedModeReadableStream();
+
+// runAllGoodFlowingModeReadableStream();
+
+runAllGoodIteratorReadableStream();
