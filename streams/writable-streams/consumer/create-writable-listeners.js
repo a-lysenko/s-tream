@@ -12,7 +12,7 @@ export function createWritableListeners(
       extendCallbacks?.close?.();
     },
     finish: () => {
-      logger.log(`[${name}]`, 'event fired: finish');e
+      logger.log(`[${name}]`, 'event fired: finish');
       extendCallbacks?.finish?.();
     },
     drain: () => {
