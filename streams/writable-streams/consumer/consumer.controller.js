@@ -1,10 +1,11 @@
 import { createWritableListeners } from './create-writable-listeners.js';
 import { createIterableWritableSource } from './create-writable-source.js';
+import { createDeferred } from '../../_helpers/create-deferred.js';
 
 export class ConsumerController {
   #consumerName;
 
-  #iterableEntriesSource;
+  #iterableEntriesSource = [].entries();
   #logger;
   #listenersOptions;
   constructor(
@@ -18,7 +19,6 @@ export class ConsumerController {
   ) {
     this.#consumerName = consumerName;
 
-    this.#iterableEntriesSource = createIterableWritableSource();
     this.#logger = logger;
 
     this.#listenersOptions= {
@@ -28,7 +28,11 @@ export class ConsumerController {
       extendCallbacks: listenerExtendCallbacks
     };
   }
-  run(stream) {
+  async run(stream) {
+    const deferred  = createDeferred();
+
+    this.#iterableEntriesSource = createIterableWritableSource();
+
     const streamListeners = createWritableListeners({
       ...this.#listenersOptions,
       extendCallbacks: {
@@ -36,7 +40,14 @@ export class ConsumerController {
           this.#logger.log(
             `[${this.#consumerName}] INSIDE DRAIN -------------- Start`,
           );
-          this.writeUntilFull(stream);
+          const allWritten = this.#writeUntilFull(stream);
+          this.#logger.log(
+            `[${this.#consumerName}] INSIDE DRAIN -------------- allWritten`, allWritten
+          );
+          if (allWritten) {
+            deferred.resolve(true);
+          }
+
           this.#logger.log(
             `[${this.#consumerName}] INSIDE DRAIN -------------- End`,
           );
@@ -47,10 +58,15 @@ export class ConsumerController {
 
     this.#attachListeners(streamListeners, stream);
 
-    this.writeUntilFull(stream);
+    const allWritten = this.#writeUntilFull(stream);
+    if (allWritten) {
+      deferred.resolve(true);
+    }
+
+    return deferred.promise;
   }
 
-  writeUntilFull(stream) {
+  #writeUntilFull(stream) {
     let writeResult = true
     for (const [index, elem] of this.#iterableEntriesSource) {
       writeResult = stream.write(elem, 'utf-8', (err) => {
@@ -90,6 +106,8 @@ export class ConsumerController {
     if (writeResult) {
       this.#writeEnd(stream);
     }
+
+    return writeResult;
   }
 
   #writeEnd(stream) {
@@ -110,5 +128,9 @@ export class ConsumerController {
       .forEach(
         ([eventName, eventHandler]) => stream.on(eventName, eventHandler)
       );
+  }
+
+  set consumerName(value) {
+    this.#consumerName = value;
   }
 }
