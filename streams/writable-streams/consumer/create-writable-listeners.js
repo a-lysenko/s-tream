@@ -15,9 +15,9 @@ export function createWritableListeners(
       logger.log(`[${name}]`, 'event fired: finish');
       extendCallbacks?.finish?.();
     },
-    drain: () => {
+    drain: async () => {
       logger.log(`[${name}]`, 'event fired: drain');
-      extendCallbacks?.drain?.();
+      await extendCallbacks?.drain?.();
     },
     error: (err) => {
       logger.error(`[${name}]`, 'event fired: error', err);
