@@ -34,7 +34,6 @@ export class SlowWriteConsumerController {
 
   async run(stream) {
     const deferred  = createDeferred();
-    const runDone = deferred.promise;
 
     this.#asyncIterableEntriesSource = (async function* () {
       for await (const entry of createIterableWritableSource()) {
@@ -73,7 +72,7 @@ export class SlowWriteConsumerController {
       deferred.resolve(true);
     }
 
-    return runDone;
+    return deferred.promise;
   }
 
   async #writeUntilFull(stream) {

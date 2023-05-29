@@ -1,6 +1,9 @@
 import {
   ConsumerController,
-  createAllGoodWritableStream, createDelayWriteCbWritableStream, init as initWritableFlow,
+  createAllGoodWritableStream,
+  createDelayWriteCbWritableStream,
+  createNoWriteCbWritableStream,
+  init as initWritableFlow,
   SlowWriteConsumerController
 } from '../streams/writable-streams/index.js';
 
@@ -23,7 +26,8 @@ export const writableConsumerTypes = {
 }
 export const writableImplementorTypes = {
   'all-good': { streamCreatorFn: createAllGoodWritableStream },
-  'delay-write-cb': { streamCreatorFn: createDelayWriteCbWritableStream }
+  'delay-write-cb': { streamCreatorFn: createDelayWriteCbWritableStream },
+  'no-write-cb': { streamCreatorFn: createNoWriteCbWritableStream },
 }
 export const writableStreamQuestionsKeys = {
   Consumer: 'consumer',

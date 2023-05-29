@@ -2,7 +2,7 @@ import { BaseWritable } from './base-writable-stream.js';
 
 class DelayWriteCbWritable extends BaseWritable {
 
-  asyncWCallbackWritableChunkIndex = 0;
+  chunkIndex = 0;
   constructor(
     {
       name,
@@ -20,12 +20,12 @@ class DelayWriteCbWritable extends BaseWritable {
   }
 
   _write(chunk, encoding, callback) {
-    const willPostponeCallback = (this.asyncWCallbackWritableChunkIndex === 1);
+    const willPostponeCallback = (this.chunkIndex === 1);
     this.logger.log(
       `[${this.name}]`, '[write]',
       'chunk', chunk, 'chunk.toString()', chunk.toString(),
       'encoding', encoding,
-      'asyncWCallbackWritableChunkIndex', this.asyncWCallbackWritableChunkIndex,
+      'this.chunkIndex', this.chunkIndex,
       'willPostponeCallback', willPostponeCallback,
       'this.writableLength', this.writableLength
     );
@@ -36,10 +36,9 @@ class DelayWriteCbWritable extends BaseWritable {
       const postponeDelay = 4000;
       this.logger.log(
         `[${this.name}]`, '[write]',
-        'callback will be postponed', postponeDelay, 'ms for', this.asyncWCallbackWritableChunkIndex
+        'callback will be postponed', postponeDelay, 'ms for', this.chunkIndex
       );
 
-      this.asyncWCallbackWritableChunkIndex++;
       setTimeout(
         () => {
           this.logger.log(
@@ -51,9 +50,10 @@ class DelayWriteCbWritable extends BaseWritable {
         postponeDelay
       );
     } else {
-      this.asyncWCallbackWritableChunkIndex++;
       callback(null);
     }
+
+    this.chunkIndex++;
   }
 }
 export function createDelayWriteCbWritableStream(
