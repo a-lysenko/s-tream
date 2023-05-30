@@ -1,13 +1,13 @@
 import { BaseWritable } from './base-writable-stream.js';
 
-class NoWriteCbWritableStream extends BaseWritable {
+export class NoWriteCbWritableStream extends BaseWritable {
 
   chunkIndex = 0;
   constructor(
     {
-      name,
-      logger,
-      writableOptions
+      name = `NoWriteCbWritable ${Date.now()}`,
+      logger = console,
+      writableOptions = { highWaterMark: 101 }
     } = {}
   ) {
     super(
@@ -43,22 +43,4 @@ class NoWriteCbWritableStream extends BaseWritable {
       );
     }
   }
-}
-export function createNoWriteCbWritableStream(
-  {
-    name = `NoWriteCbWritable ${Date.now()}`,
-    logger = console,
-    writableOptions = { highWaterMark: 101 }
-  } = {}
-) {
-
-  const noWriteCbWritableStream = new NoWriteCbWritableStream(
-    {
-      name,
-      logger,
-      writableOptions
-    }
-  );
-
-  return noWriteCbWritableStream;
 }

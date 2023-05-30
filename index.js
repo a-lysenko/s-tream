@@ -77,7 +77,7 @@ try {
     throw new Error(`${initFunction} has not been implemented yet`);
   }
   await initFunction(
-    answers[writableStreamQuestionsKeys.Implementor].streamCreatorFn,
+    answers[writableStreamQuestionsKeys.Implementor].streamConstructor,
     answers[writableStreamQuestionsKeys.Consumer].controller,
     {
       writableOptions: {

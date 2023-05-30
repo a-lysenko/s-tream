@@ -1,13 +1,13 @@
 import { BaseWritable } from './base-writable-stream.js';
 
-class DelayWriteCbWritable extends BaseWritable {
+export class DelayWriteCbWritable extends BaseWritable {
 
   chunkIndex = 0;
   constructor(
     {
-      name,
-      logger,
-      writableOptions
+      name = `DelayWriteCbWritable ${Date.now()}`,
+      logger = console,
+      writableOptions = { highWaterMark: 101 }
     } = {}
   ) {
     super(
@@ -55,22 +55,4 @@ class DelayWriteCbWritable extends BaseWritable {
 
     this.chunkIndex++;
   }
-}
-export function createDelayWriteCbWritableStream(
-  {
-    name = `DelayWriteCbWritable ${Date.now()}`,
-    logger = console,
-    writableOptions = { highWaterMark: 101 }
-  } = {}
-) {
-
-  const delayWriteCbWritable = new DelayWriteCbWritable(
-    {
-      name,
-      logger,
-      writableOptions
-    }
-  );
-
-  return delayWriteCbWritable;
 }

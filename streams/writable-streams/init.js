@@ -1,9 +1,9 @@
 export async function init(
-  streamCreatorFn, consumerCtor,
-  streamCreatorFnOptions = {}, consumerOptions = {},
+  streamCreatorCtor, consumerCtor,
+  streamCreatorOptions = {}, consumerOptions = {},
   consumerName
 ) {
-  const stream = streamCreatorFn(streamCreatorFnOptions);
+  const stream = new streamCreatorCtor(streamCreatorOptions);
   const consumer = new consumerCtor(consumerName, consumerOptions);
   await consumer.run(stream);
 }
