@@ -13,15 +13,5 @@ export function createAllGoodWritableStream(
     writableOptions,
   });
 
-  setTimeout(
-    () => {
-      logger.log(
-        `[${name}]`,
-        'setTimeout(2000) streamStorage', baseWritable.streamStorage
-      );
-    },
-    2000
-  );
-
   return baseWritable;
 }

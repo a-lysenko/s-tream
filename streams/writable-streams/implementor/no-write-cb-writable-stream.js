@@ -60,15 +60,5 @@ export function createNoWriteCbWritableStream(
     }
   );
 
-  setTimeout(
-    () => {
-      logger.log(
-        `[${name}]`,
-        'setTimeout(2000) streamStorage', noWriteCbWritableStream.streamStorage
-      );
-    },
-    2000
-  );
-
   return noWriteCbWritableStream;
 }

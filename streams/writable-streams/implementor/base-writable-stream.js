@@ -19,6 +19,17 @@ export class BaseWritable extends Writable {
     );
     this.logger = logger;
     this.name = name;
+
+    const timeout = 2000;
+    setTimeout(
+      () => {
+        this.logger.log(
+          `[${this.name}]`,
+          `setTimeout(${timeout}) streamStorage`, this.#streamStorage
+        );
+      },
+      timeout
+    );
   }
 
   _construct(callback) {

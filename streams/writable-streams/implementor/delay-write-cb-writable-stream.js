@@ -72,15 +72,5 @@ export function createDelayWriteCbWritableStream(
     }
   );
 
-  setTimeout(
-    () => {
-      logger.log(
-        `[${name}]`,
-        'setTimeout(2000) streamStorage', delayWriteCbWritable.streamStorage
-      );
-    },
-    2000
-  );
-
   return delayWriteCbWritable;
 }
