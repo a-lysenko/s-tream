@@ -1,6 +1,6 @@
-import { ImageWriteStream } from "./writable-streams/create-image-writable-stream.js";
-import { createReadStream } from "fs";
-import { join, extname } from "node:path";
+import { ImageWriteStream } from './writable-streams/create-image-writable-stream.js';
+import { createReadStream } from 'fs';
+import { join, extname } from 'node:path';
 
 export function runWithImage() {
   const imageRelPath = 'streams/writable-streams/test-image.jpg';

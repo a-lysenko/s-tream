@@ -1,4 +1,4 @@
-import { Writable } from "stream";
+import { Writable } from 'stream';
 
 export function run() {
   const asyncWCallbackWritableSource = Array.from(
