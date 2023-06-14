@@ -1,31 +1,30 @@
 import { createDeferred } from '../../_helpers/create-deferred.js';
 import { createIterableWritableSource } from './create-writable-source.js';
 import { createWritableListeners } from './create-writable-listeners.js';
+import { writeChunkWithLogging } from './consumer.controller.js';
+import { Logger } from '../../_helpers/logger.js';
 
 export class SlowWriteConsumerController {
+  #logger = new Logger({
+    prefixSettings: {
+      value: 'Slow Consumer',
+      color: 'greenBright',
+    },
+    chalkStringsOnly: true
+  });
 
-  #consumerName;
-
+  #listenersOptions;
   #asyncIterableEntriesSource = (async function* () {
     yield* [].entries();
   })();
-  #logger;
-  #listenersOptions;
+
   constructor(
-    consumerName = `Slow Consumer ${Date.now()}`,
     {
-      listenerName,
       listenersIncludeOnly = [],
-      listenerExtendCallbacks = {},
-      logger = console
+      listenerExtendCallbacks = {}
     } = {}
   ) {
-    this.#consumerName = consumerName;
-
-    this.#logger = logger;
-
     this.#listenersOptions= {
-      name: listenerName,
       includeOnly: listenersIncludeOnly,
       logger: this.#logger,
       extendCallbacks: listenerExtendCallbacks
@@ -46,20 +45,16 @@ export class SlowWriteConsumerController {
       ...this.#listenersOptions,
       extendCallbacks: {
         drain: async () => {
-          this.#logger.log(
-            `[${this.#consumerName}] INSIDE DRAIN -------------- Start`,
-          );
+          this.#logger.log('INSIDE DRAIN -------------- Start');
           const allWritten = await this.#writeUntilFull(stream);
           this.#logger.log(
-            `[${this.#consumerName}] INSIDE DRAIN -------------- allWritten`, allWritten
+            'INSIDE DRAIN -------------- allWritten', allWritten
           );
           if (allWritten) {
             deferred.resolve(true);
           }
 
-          this.#logger.log(
-            `[${this.#consumerName}] INSIDE DRAIN -------------- End`,
-          );
+          this.#logger.log('INSIDE DRAIN -------------- End');
         },
         ...this.#listenersOptions.extendCallbacks,
       }
@@ -78,34 +73,7 @@ export class SlowWriteConsumerController {
   async #writeUntilFull(stream) {
     let writeResult = true
     for await (const [index, elem] of this.#asyncIterableEntriesSource) {
-      writeResult = stream.write(elem, 'utf-8', (err) => {
-        if (err) {
-          this.#logger.error(
-            `[${this.#consumerName}]`,
-            '[write action -> write cb.]',
-            'ERROR', index, 'for elem', elem,
-            'stream.writableLength', stream.writableLength,
-            'err', err
-          );
-          return;
-        }
-
-        this.#logger.log(
-          `[${this.#consumerName}]`,
-          '[write action -> write cb.]',
-          'created on index', index, 'for elem', elem,
-          'stream.writableLength', stream.writableLength
-        );
-      });
-
-
-      this.#logger.log(
-        `[${this.#consumerName}]`,
-        '[write action]',
-        'on index', index, 'for elem', elem,
-        'writeResult', writeResult,
-        'stream.writableLength', stream.writableLength
-      );
+      writeResult = writeChunkWithLogging(stream, this.#logger, index, elem);
 
       if (!writeResult) {
         break;
@@ -124,7 +92,6 @@ export class SlowWriteConsumerController {
       'end-chunk',
       () => {
         this.#logger.log(
-          `[${this.#consumerName}]`,
           '[end action -> end cb]',
           'stream.writableLength', stream.writableLength,
         );
@@ -137,9 +104,5 @@ export class SlowWriteConsumerController {
       .forEach(
         ([eventName, eventHandler]) => stream.on(eventName, eventHandler)
       );
-  }
-
-  set consumerName(value) {
-    this.#consumerName = value;
   }
 }

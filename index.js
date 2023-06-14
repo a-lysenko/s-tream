@@ -55,7 +55,11 @@ const questions = [
     name: questionsKeys.StreamType,
     message: 'What type of stream do you want to demo?',
     choices: Object.entries(streamTypes)
-      .map(([name, value]) => ({ name, value })),
+      .map(
+        ([name, value]) => ({
+          name, value, disabled: initFunctionsToStreamTypes[value] === null
+        })
+      ),
     default: streamTypes.Writable,
   },
   ...writableStreamQuestions.map(
@@ -73,9 +77,7 @@ try {
     .forEach((value) => console.log(value));
 
   const initFunction = initFunctionsToStreamTypes[answers.streamType];
-  if (typeof initFunction === 'string') {
-    throw new Error(`${initFunction} has not been implemented yet`);
-  }
+
   await initFunction(
     answers[writableStreamQuestionsKeys.Implementor].streamConstructor,
     answers[writableStreamQuestionsKeys.Consumer].controller,

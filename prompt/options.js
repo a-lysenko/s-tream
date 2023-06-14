@@ -15,10 +15,10 @@ export const streamTypes = {
 }
 
 export const initFunctionsToStreamTypes = {
-  [streamTypes.Readable]: 'initReadableStream',
+  [streamTypes.Readable]: null,
   [streamTypes.Writable]: initWritableFlow,
-  [streamTypes.Duplex]: 'initDuplexStream',
-  [streamTypes.Transform]: 'initTransformStream',
+  [streamTypes.Duplex]: null,
+  [streamTypes.Transform]: null,
 }
 export const writableConsumerTypes = {
   regular: { controller: ConsumerController },

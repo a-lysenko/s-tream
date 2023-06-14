@@ -1,6 +1,6 @@
 export function createWritableListeners(
   {
-    name = `Listener ${Date.now()}`,
+    name = 'Listener',
     includeOnly = [],
     logger = console,
     extendCallbacks = {}
