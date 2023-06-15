@@ -16,13 +16,11 @@ export class ConsumerController {
   #iterableEntriesSource = [].entries();
   constructor(
     {
-      listenerName,
       listenersIncludeOnly = [],
       listenerExtendCallbacks = {}
     } = {}
   ) {
     this.#listenersOptions= {
-      name: listenerName,
       includeOnly: listenersIncludeOnly,
       logger: this.#logger,
       extendCallbacks: listenerExtendCallbacks
@@ -80,6 +78,11 @@ export class ConsumerController {
   }
 
   #writeEnd(stream) {
+    this.#logger.log(
+      '[end action]',
+      'stream.writableLength', stream.writableLength,
+    );
+
     stream.end(
       'end-chunk',
       () => {
@@ -100,12 +103,17 @@ export class ConsumerController {
 }
 
 export function writeChunkWithLogging(stream, logger, index, elem) {
+  const messageContent = [
+    'on index', index, 'elem', elem,
+    'stream.writableLength', stream.writableLength,
+  ];
+
   const writeResult = stream.write(elem, 'utf-8', (err) => {
     if (err) {
       logger.error(
         '[write action -> write cb.]',
-        'ERROR on index', index, 'elem', elem,
-        'stream.writableLength', stream.writableLength,
+        'ERROR',
+        ...messageContent,
         'err', err
       );
       return;
@@ -113,16 +121,14 @@ export function writeChunkWithLogging(stream, logger, index, elem) {
 
     logger.log(
       '[write action -> write cb.]',
-      'OK on index', index, 'elem', elem,
-      'stream.writableLength', stream.writableLength
+      'OK',
+      ...messageContent
     );
   });
 
-
   logger.log(
     '[write action]',
-    'on index', index, 'for elem', elem,
-    'stream.writableLength', stream.writableLength,
+    ...messageContent,
     'writeResult', writeResult
   );
 

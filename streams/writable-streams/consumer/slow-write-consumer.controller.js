@@ -88,6 +88,11 @@ export class SlowWriteConsumerController {
   }
 
   #writeEnd(stream) {
+    this.#logger.log(
+      '[end action]',
+      'stream.writableLength', stream.writableLength,
+    );
+
     stream.end(
       'end-chunk',
       () => {

@@ -1,26 +1,26 @@
 export function createWritableListeners(
   {
-    name = 'Listener',
     includeOnly = [],
     logger = console,
     extendCallbacks = {}
   } = {}
 ) {
+  const eventMessagePattern = (eventName) => `[Listener] event fired: ${eventName}`;
   const allListeners = {
     close: () => {
-      logger.log(`[${name}]`, 'event fired: close');
+      logger.log(eventMessagePattern('close'));
       extendCallbacks?.close?.();
     },
     finish: () => {
-      logger.log(`[${name}]`, 'event fired: finish');
+      logger.log(eventMessagePattern('finish'));
       extendCallbacks?.finish?.();
     },
     drain: async () => {
-      logger.log(`[${name}]`, 'event fired: drain');
+      logger.log(eventMessagePattern('drain'));
       await extendCallbacks?.drain?.();
     },
     error: (err) => {
-      logger.error(`[${name}]`, 'event fired: error', err);
+      logger.error(eventMessagePattern('error'), err);
       extendCallbacks?.error?.(err);
     }
   }
