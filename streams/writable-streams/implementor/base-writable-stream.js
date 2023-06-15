@@ -11,7 +11,6 @@ const defaultLoggerOptions = {
 export class BaseWritable extends Writable {
   logger;
 
-  name;
   #streamStorage = [];
   constructor(
     {
