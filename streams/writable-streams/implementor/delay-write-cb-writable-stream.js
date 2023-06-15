@@ -5,7 +5,6 @@ export class DelayWriteCbWritable extends BaseWritable {
   chunkIndex = 0;
   constructor(
     {
-      name = 'DelayWriteCbWritable',
       writableOptions = { highWaterMark: 101 }
     } = {}
   ) {
@@ -13,7 +12,7 @@ export class DelayWriteCbWritable extends BaseWritable {
       {
         writableOptions,
         loggerOptions: {
-          prefix: name
+          prefix: 'DelayWriteCbWritable'
         }
       }
     );

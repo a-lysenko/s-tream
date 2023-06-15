@@ -5,7 +5,6 @@ export class NoWriteCbWritableStream extends BaseWritable {
   chunkIndex = 0;
   constructor(
     {
-      name = 'NoWriteCbWritable',
       writableOptions = { highWaterMark: 101 }
     } = {}
   ) {
@@ -13,7 +12,7 @@ export class NoWriteCbWritableStream extends BaseWritable {
       {
         writableOptions,
         loggerOptions: {
-          prefix: name
+          prefix: 'NoWriteCbWritable'
         }
       }
     );
