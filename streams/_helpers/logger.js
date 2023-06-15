@@ -16,14 +16,11 @@ export class Logger {
   ) {
     this.#chalkedFn = this.#createChalkedFn(color, bgColor);
 
-
     this.setPrefix(
       Reflect.has(prefixSettings, 'value') ? prefixSettings.value : prefix,
       Reflect.has(prefixSettings, 'color') ? prefixSettings.color : color,
       Reflect.has(prefixSettings, 'bgColor') ? prefixSettings.bgColor : bgColor
     );
-
-    console.log('PREFIX', this.#prefix, prefix);
 
     this.#chalkStringsOnly = chalkStringsOnly;
   }

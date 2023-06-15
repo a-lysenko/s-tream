@@ -33,9 +33,7 @@ export function createWritableListeners(
     addListener(event: 'unpipe', listener: (src: Readable) => void): this;
    */
   if (!includeOnly.length) {
-    return {
-      ...allListeners
-    }
+    return allListeners;
   }
 
   return Object.fromEntries(

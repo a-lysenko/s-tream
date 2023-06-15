@@ -5,16 +5,16 @@ export class NoWriteCbWritableStream extends BaseWritable {
   chunkIndex = 0;
   constructor(
     {
-      name = `NoWriteCbWritable ${Date.now()}`,
-      logger = console,
+      name = 'NoWriteCbWritable',
       writableOptions = { highWaterMark: 101 }
     } = {}
   ) {
     super(
       {
-        name,
-        logger,
         writableOptions,
+        loggerOptions: {
+          prefix: name
+        }
       }
     );
   }
@@ -22,7 +22,7 @@ export class NoWriteCbWritableStream extends BaseWritable {
   _write(chunk, encoding, callback) {
     const willIgnoreCb = (this.chunkIndex === 1);
     this.logger.log(
-      `[${this.name}]`, '[write]',
+      '[write]',
       'chunk', chunk, 'chunk.toString()', chunk.toString(),
       'encoding', encoding,
       'this.chunkIndex', this.chunkIndex,
@@ -38,7 +38,7 @@ export class NoWriteCbWritableStream extends BaseWritable {
       callback(null);
     } else {
       this.logger.warn(
-        `[${this.name}]`, '[write]',
+        '[write]',
         'callback has been ignored'
       );
     }

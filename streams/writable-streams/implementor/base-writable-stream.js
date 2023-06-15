@@ -1,5 +1,13 @@
 import { Writable } from 'stream';
+import { Logger } from '../../_helpers/logger.js';
 
+const defaultLoggerOptions = {
+  prefix: 'BaseWritable',
+  prefixSettings: {
+    color: 'blueBright',
+  },
+  chalkStringsOnly: true
+}
 export class BaseWritable extends Writable {
   logger;
 
@@ -7,9 +15,8 @@ export class BaseWritable extends Writable {
   #streamStorage = [];
   constructor(
     {
-      name = `BaseWritable ${Date.now()}`,
-      logger = console,
-      writableOptions = { highWaterMark: 101 }
+      writableOptions = { highWaterMark: 101 },
+      loggerOptions = defaultLoggerOptions,
     } = {}
   ) {
     super(
@@ -17,14 +24,16 @@ export class BaseWritable extends Writable {
         highWaterMark: writableOptions.highWaterMark ?? 101
       }
     );
-    this.logger = logger;
-    this.name = name;
+
+    this.logger = new Logger({
+      ...defaultLoggerOptions,
+      ...loggerOptions
+    });
 
     const timeout = 2000;
     setTimeout(
       () => {
         this.logger.log(
-          `[${this.name}]`,
           `setTimeout(${timeout}) streamStorage`, this.#streamStorage
         );
       },
@@ -34,7 +43,7 @@ export class BaseWritable extends Writable {
 
   _construct(callback) {
     this.logger.log(
-      `[${this.name}]`, '[construct]',
+      '[construct]',
       'this.writableHighWaterMark', this.writableHighWaterMark
     );
     callback();
@@ -42,7 +51,6 @@ export class BaseWritable extends Writable {
 
   _write(chunk, encoding, callback) {
     this.logger.log(
-      `[${this.name}]`,
       '[write]',
       'chunk', chunk, 'chunk.toString()', chunk.toString(),
       'encoding', encoding,
@@ -55,14 +63,14 @@ export class BaseWritable extends Writable {
 
   _final(callback) {
     this.logger.log(
-      `[${this.name}]`, '[final]',
+      '[final]',
       'this.writableLength', this.writableLength
     );
     callback();
   }
 
   _destroy(error, callback) {
-    this.logger.log(`[${this.name}]`, '[destroy]', 'error', error);
+    this.logger.log('[destroy]', 'error', error);
     callback(error);
   }
 

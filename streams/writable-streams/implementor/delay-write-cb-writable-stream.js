@@ -5,16 +5,16 @@ export class DelayWriteCbWritable extends BaseWritable {
   chunkIndex = 0;
   constructor(
     {
-      name = `DelayWriteCbWritable ${Date.now()}`,
-      logger = console,
+      name = 'DelayWriteCbWritable',
       writableOptions = { highWaterMark: 101 }
     } = {}
   ) {
     super(
       {
-        name,
-        logger,
         writableOptions,
+        loggerOptions: {
+          prefix: name
+        }
       }
     );
   }
@@ -22,7 +22,7 @@ export class DelayWriteCbWritable extends BaseWritable {
   _write(chunk, encoding, callback) {
     const willPostponeCallback = (this.chunkIndex === 1);
     this.logger.log(
-      `[${this.name}]`, '[write]',
+      '[write]',
       'chunk', chunk, 'chunk.toString()', chunk.toString(),
       'encoding', encoding,
       'this.chunkIndex', this.chunkIndex,
@@ -35,14 +35,14 @@ export class DelayWriteCbWritable extends BaseWritable {
     if (willPostponeCallback) {
       const postponeDelay = 4000;
       this.logger.log(
-        `[${this.name}]`, '[write]',
+        '[write]',
         'callback will be postponed', postponeDelay, 'ms for', this.chunkIndex
       );
 
       setTimeout(
         () => {
           this.logger.log(
-            `[${this.name}]`, '[write]',
+            '[write]',
             'Now I will execute the postponed cb for', chunk.toString(), ':'
           );
           callback(null);
