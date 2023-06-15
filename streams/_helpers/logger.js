@@ -8,30 +8,28 @@ export class Logger {
   constructor(
     {
       prefix = '',
-      prefixSettings = {}, // { value, color, bgColor }
+      prefixSettings = {}, // { value, color }
       color = '',
-      bgColor = '',
       chalkStringsOnly = false
     } = {}
   ) {
-    this.#chalkedFn = this.#createChalkedFn(color, bgColor);
+    this.#chalkedFn = this.#createChalkedFn(color);
 
     this.setPrefix(
       Reflect.has(prefixSettings, 'value') ? prefixSettings.value : prefix,
-      Reflect.has(prefixSettings, 'color') ? prefixSettings.color : color,
-      Reflect.has(prefixSettings, 'bgColor') ? prefixSettings.bgColor : bgColor
+      Reflect.has(prefixSettings, 'color') ? prefixSettings.color : color
     );
 
     this.#chalkStringsOnly = chalkStringsOnly;
   }
 
-  setPrefix(prefix, color = '', bgColor = '') {
+  setPrefix(prefix, color = '') {
     if (!prefix) {
       this.#prefix = '';
       return;
     }
 
-    const chalkedFn = this.#createChalkedFn(color, bgColor);
+    const chalkedFn = this.#createChalkedFn(color);
     this.#prefix = chalkedFn(`[${prefix}]`);
   }
 
@@ -43,30 +41,21 @@ export class Logger {
 
   warn(...args) {
     const formattedArgs = this.#prefixArgsWithChalk(args);
-    console.warn(...formattedArgs);
+    console.warn('🟠', ...formattedArgs);
   }
 
   error(...args) {
     const formattedArgs = this.#prefixArgsWithChalk(args);
 
-    console.error(...formattedArgs);
+    console.error('🔴', ...formattedArgs);
   }
 
-  #getFormattedBGColorName = (colorName) => {
-    if (!colorName) {
-      return '';
+  #createChalkedFn(color) {
+    if (!color || typeof chalk[color] !== 'function') {
+      return (value) => value;
     }
-    return `bg${colorName[0].toUpperCase()}${colorName.slice(1)}`;
-  }
 
-  #createChalkedFn(color, bgColor) {
-    const formattedBGColorName = this.#getFormattedBGColorName(bgColor);
-
-    const coloredFn = (color) ? chalk[color] : chalk;
-    const coloredBgFn = (formattedBGColorName)
-      ? coloredFn[formattedBGColorName] : coloredFn;
-
-    return (value) => coloredBgFn(value);
+    return (value) => chalk[color](value);
   }
 
   #prefixArgsWithChalk(
