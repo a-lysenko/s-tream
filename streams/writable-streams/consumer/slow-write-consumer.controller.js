@@ -29,13 +29,15 @@ export class SlowWriteConsumerController {
       logger: this.#logger,
       extendCallbacks: listenerExtendCallbacks
     };
+
+    this.#logger.log('[constructor]');
   }
 
   async run(stream) {
     const deferred  = createDeferred();
 
     this.#asyncIterableEntriesSource = (async function* () {
-      for await (const entry of createIterableWritableSource()) {
+      for (const entry of createIterableWritableSource()) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         yield entry;
       }
@@ -71,7 +73,7 @@ export class SlowWriteConsumerController {
   }
 
   async #writeUntilFull(stream) {
-    let writeResult = true
+    let writeResult = true;
     for await (const [index, elem] of this.#asyncIterableEntriesSource) {
       writeResult = writeChunkWithLogging(stream, this.#logger, index, elem);
 

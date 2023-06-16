@@ -25,6 +25,8 @@ export class ConsumerController {
       logger: this.#logger,
       extendCallbacks: listenerExtendCallbacks
     };
+
+    this.#logger.log('[constructor]');
   }
   async run(stream) {
     const deferred  = createDeferred();
@@ -61,7 +63,7 @@ export class ConsumerController {
   }
 
   #writeUntilFull(stream) {
-    let writeResult = true
+    let writeResult = true;
     for (const [index, elem] of this.#iterableEntriesSource) {
       writeResult = writeChunkWithLogging(stream, this.#logger, index, elem);
 
@@ -103,7 +105,7 @@ export class ConsumerController {
 }
 
 export function writeChunkWithLogging(stream, logger, index, elem) {
-  const messageContent = [
+  const buildMessageContent = () => [
     'on index', index, 'elem', elem,
     'stream.writableLength', stream.writableLength,
   ];
@@ -113,7 +115,7 @@ export function writeChunkWithLogging(stream, logger, index, elem) {
       logger.error(
         '[write action -> write cb.]',
         'ERROR',
-        ...messageContent,
+        ...buildMessageContent(),
         'err', err
       );
       return;
@@ -122,13 +124,13 @@ export function writeChunkWithLogging(stream, logger, index, elem) {
     logger.log(
       '[write action -> write cb.]',
       'OK',
-      ...messageContent
+      ...buildMessageContent()
     );
   });
 
   logger.log(
     '[write action]',
-    ...messageContent,
+    ...buildMessageContent(),
     'writeResult', writeResult
   );
 

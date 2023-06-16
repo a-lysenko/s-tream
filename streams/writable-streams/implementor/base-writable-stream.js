@@ -29,7 +29,7 @@ export class BaseWritable extends Writable {
       ...loggerOptions
     });
 
-    const timeout = 2000;
+    const timeout = 0;
     setTimeout(
       () => {
         this.logger.log(
@@ -38,6 +38,8 @@ export class BaseWritable extends Writable {
       },
       timeout
     );
+
+    this.logger.log('[BaseWritable constructor]');
   }
 
   _construct(callback) {
